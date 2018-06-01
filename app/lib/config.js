@@ -36,7 +36,8 @@ const defaultSettings = memoize(() => {
     isMigratedPlugins: false,
     trackingEnabled: true,
     crashreportingEnabled: true,
-    openAtLogin: true
+    openAtLogin: true,
+    lockPosition: false
   }
 })
 
@@ -79,6 +80,8 @@ const set = (key, value) => {
     ...defaultSettings(),
     ...readConfig()
   }
+  if(!get(‘lockPosition’) || key != ‘position’) {
+
   config[key] = value
   fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2))
   // Track settings changes
@@ -91,6 +94,7 @@ const set = (key, value) => {
     console.log('notify main process', key, value)
     // Notify main process about settings changes
     ipcRenderer.send('updateSettings', key, value)
+}
   }
 }
 
